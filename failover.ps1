@@ -32,8 +32,8 @@ foreach ( $esg in $edges)
 { 
 
 Write-Host "Working on ESG: "$esg
-Write-Host "Disabling Uplink connect to VLAN 215"
-Write-Host "Enabling Uplink connect to VLAN 216"
+Write-Host "Disabling Uplink-Core connect to VLAN 216"
+Write-Host "Enabling Uplink-Core-DR connect to VLAN 215"
 
 #Get the Edge and interface you want to modify
 $edge = Get-NsxEdge $esg
