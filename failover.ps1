@@ -24,6 +24,9 @@
 #Replace the ESG name accordingly 
 $edges = ("esg-test-1", "esg-test-2")
 
+#Replace the DLR name accordingly
+$dlrs = dlr-test
+
 #For each ESG in the list of Edges 
 foreach ( $esg in $edges)
 { 
@@ -80,7 +83,7 @@ $edgerouting = Get-NsxEdgeRouting $edge
 $coreUplinkDrIpAddr = $coreUplinkDr.addressGroups.addressGroup.primaryAddress
 $edgerouting.routingGlobalConfig.routerId = $coreUplinkDrIpAddr
 
-#Change Transit-internal interface OSPF Area to 215
+#Change Transit-internal interface OSPF Area to 215. Verify the vnic #
 $transitIntOspfArea = $edgerouting.ospf.ospfinterfaces.ospfinterface | where-object {$_.vnic -eq "1"} 
 $transitIntOspfArea.areaId = "215"
 
@@ -96,4 +99,18 @@ Set-NsxEdgeRouting -EdgeRouting $edgerouting -Confirm:$false
 Write-Host "`nComplete`n"
 
 }
+
+
+#Change DLR interface OSPF Area to 215
+Write-Host "`Change DLR OSFF Area"
+$dlr = Get-NsxLogicalRouter $dlrs
+$dlrRouting = Get-NsxLogicalRouterRouting $dlr
+
+#Verify the DLR vNIC #
+$dlrOspfArea = $dlrRouting.ospf.ospfinterfaces.ospfinterface | where-object {$_.vnic -eq "2"} 
+$dlrOspfArea.areaId = "215"
+
+Set-NsxLogicalRouterRouting -LogicalRouterRouting $dlrRouting -Confirm:$false
+Write-Host "`nComplete`n"
+
 
