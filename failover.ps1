@@ -72,15 +72,18 @@ Write-Host "`nComplete`n"
 #Change ESG Router ID"
 Write-Host "Changing Router ID"
 
-#Collect the Primary IP address of uplink216
-$coreUplinkDrIpAddr = $coreUplinkDr.addressGroups.addressGroup.primaryAddress
-
 #Refresh NSX Edge Routing Object 
 $edge = Get-NsxEdge $esg
 $edgerouting = Get-NsxEdgeRouting $edge
 
-#Change Router ID
+#Set Router ID to Core-Uplink-DR IP 
+$coreUplinkDrIpAddr = $coreUplinkDr.addressGroups.addressGroup.primaryAddress
 $edgerouting.routingGlobalConfig.routerId = $coreUplinkDrIpAddr
+
+#Change Transit-internal interface OSPF Area to 215
+$transitIntOspfArea = $edgerouting.ospf.ospfinterfaces.ospfinterface | where-object {$_.vnic -eq "1"} 
+$transitIntOspfArea.areaId = "215"
+
 Set-NsxEdgeRouting -EdgeRouting $edgerouting -Confirm:$false
 Write-Host "`nComplete`n"
 
@@ -93,3 +96,4 @@ Set-NsxEdgeRouting -EdgeRouting $edgerouting -Confirm:$false
 Write-Host "`nComplete`n"
 
 }
+
