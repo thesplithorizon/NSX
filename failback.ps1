@@ -25,7 +25,7 @@
 $edges = ("esg-test-1", "esg-test-2")
 
 #Replace the DLR name accordingly
-$dlrs = dlr-test
+$dlrs = "dlr-test"
 
 #For each ESG in the list of Edges 
 foreach ( $esg in $edges)
